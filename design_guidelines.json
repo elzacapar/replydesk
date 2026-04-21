@@ -1,0 +1,109 @@
+{
+  "theme": "dark",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "design_philosophy": "A high-performance 'Control Room' dashboard for managing social engagement. 95% of the UI is strictly monochrome (deep obsidian and stark white) to minimize cognitive load and maximize data clarity. Brand/signal colors are used exclusively for platform identification (YouTube, IG, etc.) and destructive actions. Layout relies on strict grid hierarchy, sharp edges, and negative space rather than heavy cards or shadows.",
+  "typography": {
+    "heading_font": "Cabinet Grotesk",
+    "body_font": "Manrope",
+    "scale": {
+      "h1": "text-4xl sm:text-5xl tracking-tighter font-black",
+      "h2": "text-2xl sm:text-3xl tracking-tight font-bold",
+      "h3": "text-xl sm:text-2xl tracking-tight font-semibold",
+      "h4": "text-lg sm:text-xl font-medium",
+      "body": "text-sm sm:text-base leading-relaxed font-medium",
+      "label": "text-xs tracking-[0.2em] uppercase font-bold text-zinc-400"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "#09090b",
+      "surface": "#18181b",
+      "surface_raised": "#27272a"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#a1a1aa",
+      "disabled": "#52525b"
+    },
+    "border": {
+      "default": "rgba(255, 255, 255, 0.1)",
+      "focus": "#ffffff",
+      "divider": "#27272a"
+    },
+    "accent": {
+      "primary": "#ffffff",
+      "primary_text": "#09090b",
+      "destructive": "#ef4444"
+    },
+    "social_brands": {
+      "youtube": "#ff0000",
+      "instagram": "#e1306c",
+      "facebook": "#1877f2",
+      "tiktok": "#00f2fe"
+    }
+  },
+  "layout_and_spacing": {
+    "grid_system": "Mode B: 'Control Room' Grid. Strict alignment, dense but breathable data presentation. Avoid generic Bootstrap columns.",
+    "sidebar": "w-64 fixed left-0 top-0 h-screen border-r border-white/10 bg-[#09090b] flex flex-col p-6 z-40",
+    "topbar": "sticky top-0 z-50 backdrop-blur-xl bg-[#09090b]/80 border-b border-white/10 px-8 py-4 flex justify-between items-center",
+    "main_content": "ml-64 p-8 max-w-4xl mx-auto min-h-screen",
+    "spacing_scale": "Follow Tailwind scale (p-4, p-6, p-8). Ensure containers with borders have internal padding (e.g., p-6) to prevent text collision."
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-white text-[#09090b] hover:bg-zinc-200 transition-colors rounded-none px-6 py-2.5 font-bold text-sm",
+      "secondary": "border border-white/10 bg-transparent text-white hover:bg-white/5 transition-colors rounded-none px-6 py-2.5 font-semibold text-sm",
+      "ghost": "text-zinc-400 hover:text-white transition-colors px-4 py-2 text-sm",
+      "destructive": "text-red-500 hover:bg-red-500/10 transition-colors px-4 py-2 rounded-none text-sm font-semibold"
+    },
+    "cards": {
+      "comment_card": "flex flex-col gap-6 p-6 bg-[#09090b] border border-white/10 rounded-none hover:border-white/20 transition-colors",
+      "ai_draft_box": "p-5 bg-[#18181b] border-l-2 border-white text-sm mt-2 relative",
+      "stat_card": "flex flex-col p-6 border border-white/10 bg-[#18181b] rounded-none"
+    },
+    "badges": {
+      "platform_tag": "inline-flex items-center gap-2 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest rounded-none border border-white/10"
+    }
+  },
+  "motion_and_interactions": {
+    "hover_states": "All interactive elements MUST define specific text colors on hover (e.g., hover:bg-white/5 hover:text-white). Do not rely on inheritance.",
+    "transitions": "Use 'transition-all duration-200 ease-out' for standard micro-interactions.",
+    "focus_states": "focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#09090b]"
+  },
+  "icons_and_assets": {
+    "icon_library": "lucide-react for core UI icons. react-icons (FaYoutube, FaInstagram, FaFacebook, FaTiktok) for social platform logos.",
+    "installation_commands": [
+      "yarn add lucide-react react-icons"
+    ],
+    "media": {
+      "abstract_background": {
+        "url": "https://images.pexels.com/photos/18599102/pexels-photo-18599102.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Granular black and white abstract texture. Use cautiously for auth pages, empty states, or sidebar background at 5-10% opacity with blend-mode-screen."
+      },
+      "avatar_1": {
+        "url": "https://images.pexels.com/photos/35839966/pexels-photo-35839966.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Professional user avatar portrait (Black & White). Use as dummy data for commenter profiles."
+      },
+      "avatar_2": {
+        "url": "https://images.pexels.com/photos/6146051/pexels-photo-6146051.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Alternative user avatar portrait (Black & White). Use as dummy data."
+      }
+    }
+  },
+  "accessibility_and_testing": {
+    "contrast": "Text must pass WCAG AA. Primary text on surface is #ffffff on #18181b (High contrast).",
+    "testing_attributes": "All interactive elements and key informational areas MUST have data-testid attributes (e.g., data-testid='approve-comment-btn', data-testid='comment-card-123')."
+  },
+  "instructions_to_main_agent": [
+    "1. Initialize the project with Tailwind CSS. Set the global body background to #09090b and text to #ffffff.",
+    "2. Import 'Cabinet Grotesk' (headings) and 'Manrope' (body) via Google Fonts or Fontsource. Set them in tailwind.config.js.",
+    "3. Build a fixed left sidebar (w-64) containing platform/account navigation. Use an accordion or collapsible list for accounts under each platform.",
+    "4. Build a sticky top nav bar containing global stats (Pending, Approved) and primary global CTAs ('Approve All', 'Fetch New').",
+    "5. For the main content panel, create a vertical feed (max-w-4xl) of Comment Cards. Each card must be sharp/rectangular (rounded-none).",
+    "6. Within the Comment Card: Show platform logo, user avatar, post title, original comment, and the AI Draft. The AI Draft area must be visually distinct (e.g., bg-[#18181b] with a solid white left border) to indicate it is editable/pending.",
+    "7. Include inline action buttons in the Comment Card: 'Approve' (Solid White), 'Edit' (Outline), 'Regenerate' (Ghost), 'Skip/Delete' (Destructive/Ghost).",
+    "8. Implement thread history as a collapsible section within the card, or a side panel drawer (using Shadcn Sheet).",
+    "9. Use purely functional colors: strictly monochrome base with accent colors strictly reserved for Social Platform icons and Badges.",
+    "10. DO NOT use rounded cards or heavy drop shadows. Stick to 1px borders (border-white/10). DO NOT use generic blue/purple gradients."
+  ]
+}
