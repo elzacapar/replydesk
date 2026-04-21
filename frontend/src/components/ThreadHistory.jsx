@@ -3,7 +3,7 @@ export default function ThreadHistory({ messages }) {
 
   return (
     <div
-      className="space-y-2 p-4 bg-[#111118] border border-white/[0.04]"
+      className="space-y-2 p-4 bg-[#111118] border border-white/[0.04] rounded-lg"
       data-testid="thread-history"
     >
       <div className="text-[10px] tracking-[0.15em] uppercase font-bold text-zinc-700 mb-3">

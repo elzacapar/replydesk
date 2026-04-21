@@ -6,8 +6,8 @@ export default function EmptyState({ selectedPlatform }) {
       className="flex flex-col items-center justify-center py-20 text-center"
       data-testid="empty-state"
     >
-      <div className="w-16 h-16 flex items-center justify-center border border-white/[0.06] mb-6">
-        <CheckCircle className="w-8 h-8 text-zinc-700" />
+      <div className="w-16 h-16 flex items-center justify-center border border-white/[0.06] rounded-2xl mb-6 bg-[#16161e] shadow-lg shadow-black/20">
+        <CheckCircle className="w-8 h-8 text-emerald-500/60" />
       </div>
       <h3
         className="text-xl font-bold text-zinc-200 tracking-tight mb-2"

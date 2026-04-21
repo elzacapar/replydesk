@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const PLATFORM_CONFIG = {
-  youtube: { icon: FaYoutube, color: "#cc3333", label: "YouTube" },
-  instagram: { icon: FaInstagram, color: "#b84d70", label: "Instagram" },
-  facebook: { icon: FaFacebook, color: "#5090d4", label: "Facebook" },
-  tiktok: { icon: FaTiktok, color: "#4db8c7", label: "TikTok" },
+  youtube: { icon: FaYoutube, color: "#FF0000", label: "YouTube" },
+  instagram: { icon: FaInstagram, color: "#E4405F", label: "Instagram" },
+  facebook: { icon: FaFacebook, color: "#1877F2", label: "Facebook" },
+  tiktok: { icon: FaTiktok, color: "#00F2EA", label: "TikTok" },
 };
 
 const TONE_OPTIONS = [
@@ -63,17 +63,25 @@ export default function Sidebar({
         className="w-64 fixed left-0 top-0 h-screen border-r border-white/[0.06] bg-[#13131a] flex flex-col z-40"
         data-testid="sidebar"
       >
-        {/* Logo */}
-        <div className="px-6 py-5 border-b border-white/[0.06]">
+        {/* Logo — fixed h-[72px] to align with TopBar */}
+        <div
+          className="h-[72px] px-6 flex flex-col justify-center border-b border-white/[0.06] relative overflow-hidden"
+        >
+          <div
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              background: "linear-gradient(135deg, #E4405F 0%, #1877F2 50%, #00F2EA 100%)",
+            }}
+          />
           <h1
-            className="text-lg font-bold tracking-tight text-zinc-100"
+            className="text-lg font-bold tracking-tight text-zinc-50 relative z-10"
             style={{ fontFamily: "'Cabinet Grotesk', 'Manrope', sans-serif" }}
             data-testid="app-title"
           >
             ReplyDesk
           </h1>
-          <p className="text-[10px] tracking-[0.2em] uppercase font-bold text-zinc-600 mt-1">
-            Social Comments
+          <p className="text-[9px] tracking-[0.15em] uppercase font-semibold text-zinc-400 mt-0.5 relative z-10">
+            Your comment inbox, powered by AI
           </p>
         </div>
 
@@ -81,9 +89,9 @@ export default function Sidebar({
         <div className="px-4 pt-4 pb-2">
           <button
             onClick={onShowAll}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+            className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               !selectedAccountId && !selectedPlatform
-                ? "bg-white/[0.07] text-zinc-100"
+                ? "bg-white/[0.08] text-zinc-100 shadow-sm shadow-black/10"
                 : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]"
             }`}
             data-testid="show-all-btn"
@@ -117,9 +125,9 @@ export default function Sidebar({
                     <div className="flex items-center">
                       <CollapsibleTrigger asChild>
                         <button
-                          className={`flex-1 flex items-center gap-3 px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                          className={`flex-1 flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
                             isSelectedPlatform
-                              ? "bg-white/[0.07] text-zinc-100"
+                              ? "bg-white/[0.08] text-zinc-100 shadow-sm shadow-black/10"
                               : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                           }`}
                           onClick={(e) => {
@@ -148,13 +156,13 @@ export default function Sidebar({
                       </CollapsibleTrigger>
                     </div>
                     <CollapsibleContent>
-                      <div className="ml-4 mt-1 space-y-0.5 border-l border-white/[0.04] pl-3">
+                      <div className="ml-4 mt-1 space-y-0.5 border-l-2 pl-3" style={{ borderColor: `${config.color}33` }}>
                         {platform.accounts.map((account) => (
                           <div key={account.id}>
                             <div
-                              className={`group flex items-center gap-2 px-2 py-1.5 text-sm transition-all duration-200 cursor-pointer ${
+                              className={`group flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-all duration-200 cursor-pointer ${
                                 selectedAccountId === account.id
-                                  ? "bg-white/[0.07] text-zinc-100"
+                                  ? "bg-white/[0.08] text-zinc-100"
                                   : "text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]"
                               }`}
                               onClick={() =>
@@ -197,7 +205,7 @@ export default function Sidebar({
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <button
-                                    className="text-[10px] font-semibold text-zinc-400 hover:text-zinc-200 transition-colors flex items-center gap-1 px-1.5 py-0.5 rounded-sm hover:bg-white/[0.04]"
+                                    className="text-[10px] font-semibold text-zinc-400 hover:text-zinc-200 transition-colors flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-white/[0.04]"
                                     data-testid={`tone-selector-${account.id}`}
                                     onClick={(e) => e.stopPropagation()}
                                   >
@@ -206,13 +214,13 @@ export default function Sidebar({
                                   </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
-                                  className="bg-[#1c1c24] border-white/[0.08] min-w-[120px]"
+                                  className="bg-[#1c1c24] border-white/[0.08] min-w-[120px] rounded-lg"
                                   align="start"
                                 >
                                   {TONE_OPTIONS.map((tone) => (
                                     <DropdownMenuItem
                                       key={tone.value}
-                                      className={`text-xs cursor-pointer ${
+                                      className={`text-xs cursor-pointer rounded-md ${
                                         account.tone_preset === tone.value
                                           ? "text-zinc-100 font-semibold"
                                           : "text-zinc-400"
@@ -240,7 +248,7 @@ export default function Sidebar({
                               onClick={() =>
                                 onConnectAccount(platform.platform)
                               }
-                              className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-zinc-600 hover:text-zinc-300 transition-all duration-200 hover:bg-white/[0.04]"
+                              className="w-full flex items-center gap-2 px-2 py-1.5 text-xs text-zinc-600 hover:text-zinc-300 rounded-md transition-all duration-200 hover:bg-white/[0.04]"
                               data-testid={`add-account-${platform.platform}`}
                             >
                               <Plus className="w-3 h-3" />
