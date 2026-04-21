@@ -88,7 +88,7 @@ def now_iso():
 
 @api_router.get("/")
 async def root():
-    return {"message": "Social Comment Reply Manager API"}
+    return {"message": "ReplyDesk API"}
 
 @api_router.get("/stats", response_model=StatsOut)
 async def get_stats():
@@ -470,6 +470,18 @@ async def skip_comment(comment_id: str):
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Comment not found")
     return {"success": True}
+
+@api_router.post("/comments/{comment_id}/toggle-like")
+async def toggle_like(comment_id: str):
+    comment = await db.comments.find_one({"id": comment_id}, {"_id": 0})
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    new_liked = not comment.get("auto_liked", False)
+    await db.comments.update_one(
+        {"id": comment_id},
+        {"$set": {"auto_liked": new_liked}}
+    )
+    return {"success": True, "auto_liked": new_liked}
 
 @api_router.post("/comments/approve-all")
 async def approve_all_comments(account_id: Optional[str] = None):

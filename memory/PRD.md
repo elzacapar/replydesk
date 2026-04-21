@@ -1,7 +1,7 @@
-# Social Comment Reply Manager - PRD
+# ReplyDesk - PRD
 
 ## Original Problem Statement
-Build a Dockerized local web app that fetches unanswered comments from connected social accounts (YouTube, Instagram, Facebook, TikTok), generates AI reply drafts using Groq API (llama3-70b-8192), and populates a review queue per account/platform. Supports Approve, Regenerate, Edit, Skip, and Approve All actions. Dark theme, thread/reply tracking, OAuth flows per platform.
+Build a Dockerized local web app (ReplyDesk) that fetches unanswered comments from connected social accounts (YouTube, Instagram, Facebook, TikTok), generates AI reply drafts using Groq API (llama3-70b-8192), and populates a review queue per account/platform.
 
 ## Architecture
 - **Backend**: FastAPI + MongoDB (motor async driver)

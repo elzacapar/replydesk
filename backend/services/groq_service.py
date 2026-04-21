@@ -40,33 +40,46 @@ TONE_PRESETS = {
     ),
 }
 
-# Keyword-based negative sentiment detection
-NEGATIVE_KEYWORDS = {
-    "hate", "suck", "sucks", "terrible", "awful", "worst", "stupid", "idiot",
-    "trash", "garbage", "disgusting", "pathetic", "loser", "fraud", "scam",
-    "fake", "kys", "ugly", "dumb", "worthless", "useless", "cringe",
-    "racist", "sexist", "die", "kill yourself", "go away", "unsubscribe",
-    "dislike", "reported", "spam", "bot", "clickbait", "liar",
-}
-
-
-import re
-
-
-def detect_sentiment(text):
-    """Basic keyword-based sentiment detection with word-boundary matching. Returns 'negative' or 'positive'."""
-    lower = text.lower()
-    for kw in NEGATIVE_KEYWORDS:
-        if re.search(r'\b' + re.escape(kw) + r'\b', lower):
-            return "negative"
-    return "positive"
-
 
 def get_groq_client():
     api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
         return None
     return Groq(api_key=api_key)
+
+
+async def detect_sentiment(text):
+    """Groq-based sentiment detection. Falls back to 'positive' if Groq unavailable."""
+    client = get_groq_client()
+    if not client:
+        return "positive"
+
+    try:
+        completion = client.chat.completions.create(
+            model="llama3-70b-8192",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a sentiment classifier. Classify the following social media comment "
+                        "as exactly one of: positive, neutral, or negative. "
+                        "Consider sarcasm, irony, and non-English languages. "
+                        "Respond with ONLY one word: positive, neutral, or negative."
+                    ),
+                },
+                {"role": "user", "content": text},
+            ],
+            temperature=0,
+            max_tokens=10,
+        )
+        result = completion.choices[0].message.content.strip().lower()
+        if result in ("positive", "neutral", "negative"):
+            return result
+        # If model returned something unexpected, default to neutral
+        return "neutral"
+    except Exception as e:
+        logger.error(f"Groq sentiment detection error: {e}")
+        return "positive"
 
 
 def build_reply_prompt(comment_text, post_title="", post_description="", platform="", thread_history=None, tone_preset="warm"):

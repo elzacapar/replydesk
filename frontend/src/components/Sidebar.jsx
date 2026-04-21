@@ -70,7 +70,7 @@ export default function Sidebar({
             style={{ fontFamily: "'Cabinet Grotesk', 'Manrope', sans-serif" }}
             data-testid="app-title"
           >
-            Reply Manager
+            ReplyDesk
           </h1>
           <p className="text-[10px] tracking-[0.2em] uppercase font-bold text-zinc-600 mt-1">
             Social Comments
@@ -265,7 +265,7 @@ export default function Sidebar({
         {/* Footer */}
         <div className="px-6 py-4 border-t border-white/[0.06]">
           <p className="text-[10px] tracking-[0.15em] uppercase text-zinc-700 font-bold">
-            Comment Reply Manager
+            ReplyDesk
           </p>
         </div>
       </aside>

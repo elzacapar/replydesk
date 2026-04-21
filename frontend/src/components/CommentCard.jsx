@@ -12,7 +12,7 @@ const PLATFORM_ICONS = {
   tiktok: { icon: FaTiktok, color: "#4db8c7" },
 };
 
-export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, onSkip }) {
+export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, onSkip, onToggleLike }) {
   const [editing, setEditing] = useState(false);
   const [editDraft, setEditDraft] = useState(comment.ai_draft);
   const [regenerating, setRegenrating] = useState(false);
@@ -74,14 +74,26 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
                   Thread Reply
                 </span>
               )}
-              {comment.auto_liked && (
-                <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+              {comment.auto_liked ? (
+                <button
+                  onClick={() => onToggleLike(comment.id)}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors cursor-pointer"
                   data-testid="auto-liked-badge"
+                  title="Click to unlike"
                 >
                   <ThumbsUp className="w-2.5 h-2.5" />
                   Liked
-                </span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => onToggleLike(comment.id)}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-zinc-500/10 text-zinc-500 border border-zinc-500/20 hover:bg-zinc-500/20 transition-colors cursor-pointer"
+                  data-testid="not-liked-badge"
+                  title="Click to like"
+                >
+                  <ThumbsUp className="w-2.5 h-2.5" />
+                  Not Liked
+                </button>
               )}
             </div>
             {comment.post_title && (

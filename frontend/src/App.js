@@ -142,6 +142,17 @@ function App() {
     }
   };
 
+  const handleToggleLike = async (commentId) => {
+    try {
+      const res = await axios.post(`${API}/comments/${commentId}/toggle-like`);
+      setComments(prev =>
+        prev.map(c => c.id === commentId ? { ...c, auto_liked: res.data.auto_liked } : c)
+      );
+    } catch (e) {
+      toast.error("Failed to toggle like");
+    }
+  };
+
   const handleSelectAccount = (accountId, platform) => {
     if (selectedAccountId === accountId) {
       setSelectedAccountId(null);
@@ -267,6 +278,7 @@ function App() {
                 onRegenerate={handleRegenerate}
                 onEdit={handleEdit}
                 onSkip={handleSkip}
+                onToggleLike={handleToggleLike}
               />
             )}
           </div>
