@@ -27,13 +27,16 @@ Build a Dockerized local web app that fetches unanswered comments from connected
 ## What's Been Implemented (2026-04-21)
 - Full FastAPI backend with all CRUD endpoints
 - All 4 platform OAuth flows (YouTube, Instagram, Facebook, TikTok)
-- Groq AI reply generation service
-- React frontend with dark theme, sidebar, top bar, comment queue
+- Groq AI reply generation service with tone presets
+- React frontend with softened dark theme, sidebar, top bar, comment queue
 - Comment cards with all actions (approve, edit, regenerate, skip)
 - Thread history display
 - Approve All functionality
 - Demo data seeding
 - Docker files (docker-compose.yml, Dockerfile, .env.example)
+- **Tone Preset system**: Per-account tone selector (Casual/Professional/Witty/Warm) adjusting Groq system prompt
+- **Auto-like with sentiment**: Keyword-based sentiment detection, auto-like positive comments, "Liked" badge display
+- **Softened dark theme**: Muted grays (#13131a base), muted text (zinc-200/300), toned-down platform accent colors
 
 ## DB Schema
 ### accounts collection

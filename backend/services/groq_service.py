@@ -50,11 +50,14 @@ NEGATIVE_KEYWORDS = {
 }
 
 
+import re
+
+
 def detect_sentiment(text):
-    """Basic keyword-based sentiment detection. Returns 'negative' or 'positive'."""
+    """Basic keyword-based sentiment detection with word-boundary matching. Returns 'negative' or 'positive'."""
     lower = text.lower()
     for kw in NEGATIVE_KEYWORDS:
-        if kw in lower:
+        if re.search(r'\b' + re.escape(kw) + r'\b', lower):
             return "negative"
     return "positive"
 
