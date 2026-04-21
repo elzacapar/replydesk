@@ -128,9 +128,30 @@ class TestComments:
         assert g.json() == []
 
     def test_seed_idempotent(self, client):
-        r = client.post(f"{API}/seed-demo", timeout=15)
+        # Iteration 5: seed now uses upsert. Call twice and verify account count stays at 4.
+        # Response may say seeded:true, but data must not be duplicated.
+        before = client.get(f"{API}/accounts", timeout=15).json()
+        before_count = len(before)
+        r1 = client.post(f"{API}/seed-demo", timeout=15)
+        assert r1.status_code == 200
+        r2 = client.post(f"{API}/seed-demo", timeout=15)
+        assert r2.status_code == 200
+        after = client.get(f"{API}/accounts", timeout=15).json()
+        assert len(after) == before_count, f"Account count changed after seed: {before_count} -> {len(after)}"
+        # Exactly 1 account per demo platform id
+        ids = [a["id"] for a in after]
+        for demo_id in ["demo-yt-1", "demo-ig-1", "demo-fb-1", "demo-tt-1"]:
+            assert ids.count(demo_id) == 1, f"Duplicate for {demo_id}: {ids.count(demo_id)}"
+
+    def test_platforms_no_duplicate_accounts(self, client):
+        # Call seed multiple times then verify /platforms has exactly 1 account per demo platform
+        for _ in range(3):
+            client.post(f"{API}/seed-demo", timeout=15)
+        r = client.get(f"{API}/platforms", timeout=15)
         assert r.status_code == 200
-        assert r.json().get("seeded") is False
+        for p in r.json():
+            demo_accounts = [a for a in p["accounts"] if a["id"].startswith("demo-")]
+            assert len(demo_accounts) == 1, f"Platform {p['platform']} has {len(demo_accounts)} demo accounts"
 
     def test_404_approve_invalid_id(self, client):
         r = client.post(f"{API}/comments/nonexistent-id-xxx/approve", timeout=15)

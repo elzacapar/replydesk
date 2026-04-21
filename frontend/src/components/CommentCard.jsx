@@ -6,10 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import ThreadHistory from "@/components/ThreadHistory";
 
 const PLATFORM_ICONS = {
-  youtube: { icon: FaYoutube, color: "#FF0000", glow: "rgba(255,0,0,0.06)" },
-  instagram: { icon: FaInstagram, color: "#E4405F", glow: "rgba(228,64,95,0.06)" },
+  youtube: { icon: FaYoutube, color: "#CC0000", glow: "rgba(204,0,0,0.06)" },
+  instagram: { icon: FaInstagram, color: "#F77737", glow: "rgba(247,119,55,0.06)" },
   facebook: { icon: FaFacebook, color: "#1877F2", glow: "rgba(24,119,242,0.06)" },
-  tiktok: { icon: FaTiktok, color: "#00F2EA", glow: "rgba(0,242,234,0.06)" },
+  tiktok: { icon: FaTiktok, color: "#00A8B5", glow: "rgba(0,168,181,0.06)" },
 };
 
 export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, onSkip, onToggleLike }) {

@@ -525,11 +525,6 @@ async def approve_all_comments(account_id: Optional[str] = None):
 # ─── Demo data seed ───
 @api_router.post("/seed-demo")
 async def seed_demo_data():
-    # Check if demo data already exists
-    existing = await db.accounts.count_documents({"id": {"$regex": "^demo-"}})
-    if existing > 0:
-        return {"message": "Demo data already exists", "seeded": False}
-    
     demo_accounts = [
         {
             "id": "demo-yt-1",
@@ -764,9 +759,17 @@ async def seed_demo_data():
     ]
     
     for acc in demo_accounts:
-        await db.accounts.insert_one(acc)
+        await db.accounts.update_one(
+            {"id": acc["id"]},
+            {"$setOnInsert": acc},
+            upsert=True,
+        )
     for comm in demo_comments:
-        await db.comments.insert_one(comm)
+        await db.comments.update_one(
+            {"platform_comment_id": comm["platform_comment_id"], "account_id": comm["account_id"]},
+            {"$setOnInsert": comm},
+            upsert=True,
+        )
     
     return {"message": "Demo data seeded successfully", "seeded": True, "accounts": len(demo_accounts), "comments": len(demo_comments)}
 
@@ -786,6 +789,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def deduplicate_accounts():
+    """Remove duplicate accounts on startup, keeping the first inserted."""
+    pipeline = [
+        {"$group": {"_id": "$id", "count": {"$sum": 1}, "docs": {"$push": "$_id"}}},
+        {"$match": {"count": {"$gt": 1}}},
+    ]
+    async for group in db.accounts.aggregate(pipeline):
+        # Keep first, delete the rest
+        ids_to_delete = group["docs"][1:]
+        await db.accounts.delete_many({"_id": {"$in": ids_to_delete}})
+    logger.info("Startup: duplicate accounts cleaned")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

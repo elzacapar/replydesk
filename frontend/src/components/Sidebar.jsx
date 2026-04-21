@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const PLATFORM_CONFIG = {
-  youtube: { icon: FaYoutube, color: "#FF0000", label: "YouTube" },
-  instagram: { icon: FaInstagram, color: "#E4405F", label: "Instagram" },
+  youtube: { icon: FaYoutube, color: "#CC0000", label: "YouTube" },
+  instagram: { icon: FaInstagram, color: "#F77737", label: "Instagram" },
   facebook: { icon: FaFacebook, color: "#1877F2", label: "Facebook" },
-  tiktok: { icon: FaTiktok, color: "#00F2EA", label: "TikTok" },
+  tiktok: { icon: FaTiktok, color: "#00A8B5", label: "TikTok" },
 };
 
 const TONE_OPTIONS = [
@@ -70,7 +70,7 @@ export default function Sidebar({
           <div
             className="absolute inset-0 opacity-[0.07]"
             style={{
-              background: "linear-gradient(135deg, #E4405F 0%, #1877F2 50%, #00F2EA 100%)",
+              background: "linear-gradient(135deg, #F77737 0%, #1877F2 50%, #00A8B5 100%)",
             }}
           />
           <h1
@@ -80,8 +80,8 @@ export default function Sidebar({
           >
             ReplyDesk
           </h1>
-          <p className="text-[9px] tracking-[0.15em] uppercase font-semibold text-zinc-400 mt-0.5 relative z-10">
-            Your comment inbox, powered by AI
+          <p className="text-[9px] tracking-[0.15em] uppercase font-semibold text-zinc-400 mt-0.5 relative z-10 leading-relaxed">
+            Your comment inbox,<br />powered by AI
           </p>
         </div>
 
