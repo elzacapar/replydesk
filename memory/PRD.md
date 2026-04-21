@@ -35,8 +35,10 @@ Build a Dockerized local web app (ReplyDesk) that fetches unanswered comments fr
 - Demo data seeding
 - Docker files (docker-compose.yml, Dockerfile, .env.example)
 - **Tone Preset system**: Per-account tone selector (Casual/Professional/Witty/Warm) adjusting Groq system prompt
-- **Auto-like with sentiment**: Keyword-based sentiment detection, auto-like positive comments, "Liked" badge display
+- **Groq-based sentiment detection**: Replaced keyword-based with LLM-powered classification (positive/neutral/negative)
+- **Auto-like with sentiment override**: Auto-like positive comments, clickable badge to toggle like/unlike per comment
 - **Softened dark theme**: Muted grays (#13131a base), muted text (zinc-200/300), toned-down platform accent colors
+- **Renamed to ReplyDesk**: All UI, docker containers, README, API messages updated
 
 ## DB Schema
 ### accounts collection
