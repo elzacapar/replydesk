@@ -344,7 +344,7 @@ async def fetch_new_comments():
                     continue
                 
                 # Detect sentiment
-                sentiment = detect_sentiment(rc["comment_text"])
+                sentiment = await detect_sentiment(rc["comment_text"])
                 auto_liked = sentiment == "positive"
                 
                 # Get account tone preset
