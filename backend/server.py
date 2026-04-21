@@ -10,7 +10,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 
-from services.groq_service import generate_reply
+from services.groq_service import generate_reply, detect_sentiment
 from services import youtube_service, facebook_service, instagram_service, tiktok_service
 
 ROOT_DIR = Path(__file__).parent
@@ -37,6 +37,7 @@ class AccountOut(BaseModel):
     platform_user_id: str
     profile_image: str = ""
     is_connected: bool = True
+    tone_preset: str = "warm"
     created_at: str = ""
 
 class CommentOut(BaseModel):
@@ -57,11 +58,16 @@ class CommentOut(BaseModel):
     status: str = "pending"
     thread_history: Optional[list] = None
     is_thread_reply: bool = False
+    auto_liked: bool = False
+    sentiment: str = ""
     created_at: str = ""
     approved_at: Optional[str] = None
 
 class EditDraftRequest(BaseModel):
     draft: str
+
+class TonePresetRequest(BaseModel):
+    tone_preset: str
 
 class StatsOut(BaseModel):
     total_pending: int = 0
@@ -130,6 +136,19 @@ async def delete_account(account_id: str):
     await db.comments.delete_many({"account_id": account_id})
     return {"success": True}
 
+@api_router.put("/accounts/{account_id}/tone")
+async def update_tone_preset(account_id: str, body: TonePresetRequest):
+    valid_tones = ["casual", "professional", "witty", "warm"]
+    if body.tone_preset not in valid_tones:
+        raise HTTPException(status_code=400, detail=f"Invalid tone. Choose from: {valid_tones}")
+    result = await db.accounts.update_one(
+        {"id": account_id},
+        {"$set": {"tone_preset": body.tone_preset}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return {"success": True, "tone_preset": body.tone_preset}
+
 @api_router.get("/accounts/{platform}/auth-url")
 async def get_auth_url(platform: str, request: Request):
     backend_url = str(request.base_url).rstrip("/")
@@ -177,6 +196,7 @@ async def oauth_callback(platform: str, request: Request, code: str = Query(...)
             "access_token": token_data["access_token"],
             "refresh_token": token_data.get("refresh_token", ""),
             "is_connected": True,
+            "tone_preset": "warm",
             "created_at": now_iso(),
         }
     elif platform == "facebook":
@@ -196,6 +216,7 @@ async def oauth_callback(platform: str, request: Request, code: str = Query(...)
             "access_token": page.get("access_token", token_data["access_token"]),
             "refresh_token": "",
             "is_connected": True,
+            "tone_preset": "warm",
             "created_at": now_iso(),
         }
     elif platform == "instagram":
@@ -215,6 +236,7 @@ async def oauth_callback(platform: str, request: Request, code: str = Query(...)
             "refresh_token": "",
             "page_id": ig_info.get("page_id", ""),
             "is_connected": True,
+            "tone_preset": "warm",
             "created_at": now_iso(),
         }
     elif platform == "tiktok":
@@ -234,6 +256,7 @@ async def oauth_callback(platform: str, request: Request, code: str = Query(...)
             "access_token": access_token,
             "refresh_token": token_data.get("refresh_token", ""),
             "is_connected": True,
+            "tone_preset": "warm",
             "created_at": now_iso(),
         }
     
@@ -320,6 +343,13 @@ async def fetch_new_comments():
                 if rc["platform_comment_id"] in known_ids:
                     continue
                 
+                # Detect sentiment
+                sentiment = detect_sentiment(rc["comment_text"])
+                auto_liked = sentiment == "positive"
+                
+                # Get account tone preset
+                tone_preset = account.get("tone_preset", "warm")
+                
                 # Generate AI reply
                 ai_draft = await generate_reply(
                     comment_text=rc["comment_text"],
@@ -327,6 +357,7 @@ async def fetch_new_comments():
                     post_description=rc.get("post_description", ""),
                     platform=platform,
                     thread_history=rc.get("thread_history"),
+                    tone_preset=tone_preset,
                 )
                 
                 comment_doc = {
@@ -346,6 +377,8 @@ async def fetch_new_comments():
                     "status": "pending",
                     "thread_history": rc.get("thread_history"),
                     "is_thread_reply": rc.get("is_thread_reply", False),
+                    "auto_liked": auto_liked,
+                    "sentiment": sentiment,
                     "created_at": now_iso(),
                     "approved_at": None,
                 }
@@ -399,12 +432,17 @@ async def regenerate_draft(comment_id: str):
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
     
+    # Get account's tone preset
+    account = await db.accounts.find_one({"id": comment["account_id"]}, {"_id": 0})
+    tone_preset = account.get("tone_preset", "warm") if account else "warm"
+    
     new_draft = await generate_reply(
         comment_text=comment["comment_text"],
         post_title=comment.get("post_title", ""),
         post_description=comment.get("post_description", ""),
         platform=comment.get("platform", ""),
         thread_history=comment.get("thread_history"),
+        tone_preset=tone_preset,
     )
     
     await db.comments.update_one(
@@ -490,6 +528,7 @@ async def seed_demo_data():
             "access_token": "",
             "refresh_token": "",
             "is_connected": False,
+            "tone_preset": "warm",
             "created_at": now_iso(),
         },
         {
@@ -501,6 +540,7 @@ async def seed_demo_data():
             "access_token": "",
             "refresh_token": "",
             "is_connected": False,
+            "tone_preset": "casual",
             "created_at": now_iso(),
         },
         {
@@ -512,6 +552,7 @@ async def seed_demo_data():
             "access_token": "",
             "refresh_token": "",
             "is_connected": False,
+            "tone_preset": "professional",
             "created_at": now_iso(),
         },
         {
@@ -523,6 +564,7 @@ async def seed_demo_data():
             "access_token": "",
             "refresh_token": "",
             "is_connected": False,
+            "tone_preset": "witty",
             "created_at": now_iso(),
         },
     ]
@@ -545,6 +587,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -565,6 +609,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -588,6 +634,8 @@ async def seed_demo_data():
                 {"role": "account", "text": "So glad it helped you decide! Honestly, I grab the A7IV for travel because it's lighter and the autofocus is insane for run-and-gun. What kind of travel shooting are you planning?"},
             ],
             "is_thread_reply": True,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -608,6 +656,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -628,6 +678,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -648,6 +700,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -668,6 +722,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },
@@ -688,6 +744,8 @@ async def seed_demo_data():
             "status": "pending",
             "thread_history": None,
             "is_thread_reply": False,
+            "auto_liked": True,
+            "sentiment": "positive",
             "created_at": now_iso(),
             "approved_at": None,
         },

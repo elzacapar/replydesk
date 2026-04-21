@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { FaYoutube, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
-import { Check, RefreshCw, Pencil, X, ChevronDown, ChevronUp, Loader2, Save } from "lucide-react";
+import { Check, RefreshCw, Pencil, X, ChevronDown, ChevronUp, Loader2, Save, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import ThreadHistory from "@/components/ThreadHistory";
 
 const PLATFORM_ICONS = {
-  youtube: { icon: FaYoutube, color: "#ff0000" },
-  instagram: { icon: FaInstagram, color: "#e1306c" },
-  facebook: { icon: FaFacebook, color: "#1877f2" },
-  tiktok: { icon: FaTiktok, color: "#00f2fe" },
+  youtube: { icon: FaYoutube, color: "#cc3333" },
+  instagram: { icon: FaInstagram, color: "#b84d70" },
+  facebook: { icon: FaFacebook, color: "#5090d4" },
+  tiktok: { icon: FaTiktok, color: "#4db8c7" },
 };
 
 export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, onSkip }) {
@@ -46,7 +46,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
 
   return (
     <article
-      className="flex flex-col gap-5 p-6 bg-[#09090b] border border-white/10 hover:border-white/20 transition-all duration-200"
+      className="flex flex-col gap-5 p-6 bg-[#16161e] border border-white/[0.06] hover:border-white/[0.1] transition-all duration-200"
       data-testid={`comment-card-${comment.id}`}
     >
       {/* Header row: platform badge + commenter info */}
@@ -55,7 +55,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
           {/* Platform icon */}
           {PlatformIcon && (
             <div
-              className="w-9 h-9 flex items-center justify-center flex-shrink-0 border border-white/10"
+              className="w-9 h-9 flex items-center justify-center flex-shrink-0 border border-white/[0.06] bg-[#1c1c24]"
               data-testid={`platform-icon-${comment.platform}`}
             >
               <PlatformIcon className="w-4 h-4" style={{ color: platform.color }} />
@@ -63,20 +63,29 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
           )}
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-bold text-white" data-testid="commenter-name">
+              <span className="text-sm font-bold text-zinc-200" data-testid="commenter-name">
                 {comment.commenter_name}
               </span>
-              <span className="text-[10px] tracking-[0.15em] uppercase font-bold text-zinc-500">
+              <span className="text-[10px] tracking-[0.15em] uppercase font-bold text-zinc-600">
                 {comment.account_username}
               </span>
               {comment.is_thread_reply && (
-                <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border border-white/10 text-zinc-400">
+                <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border border-white/[0.06] text-zinc-500">
                   Thread Reply
+                </span>
+              )}
+              {comment.auto_liked && (
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  data-testid="auto-liked-badge"
+                >
+                  <ThumbsUp className="w-2.5 h-2.5" />
+                  Liked
                 </span>
               )}
             </div>
             {comment.post_title && (
-              <p className="text-xs text-zinc-500 mt-0.5 truncate" data-testid="post-title">
+              <p className="text-xs text-zinc-600 mt-0.5 truncate" data-testid="post-title">
                 on: {comment.post_title}
               </p>
             )}
@@ -89,7 +98,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
         <div>
           <button
             onClick={() => setShowThread(!showThread)}
-            className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
             data-testid="toggle-thread-btn"
           >
             {showThread ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -104,15 +113,15 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
       )}
 
       {/* Original comment */}
-      <div className="pl-4 border-l-2 border-zinc-700">
-        <p className="text-sm text-zinc-200 leading-relaxed" data-testid="comment-text">
+      <div className="pl-4 border-l-2 border-zinc-700/60">
+        <p className="text-sm text-zinc-300 leading-relaxed" data-testid="comment-text">
           {comment.comment_text}
         </p>
       </div>
 
       {/* AI Draft reply */}
       <div className="relative" data-testid="ai-draft-section">
-        <div className="text-[10px] tracking-[0.2em] uppercase font-bold text-zinc-500 mb-2">
+        <div className="text-[10px] tracking-[0.2em] uppercase font-bold text-zinc-600 mb-2">
           AI Draft Reply
         </div>
         {editing ? (
@@ -120,13 +129,13 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
             <Textarea
               value={editDraft}
               onChange={(e) => setEditDraft(e.target.value)}
-              className="bg-[#18181b] border-white/10 text-sm text-white min-h-[80px] rounded-none focus:ring-1 focus:ring-white focus:border-white/20 resize-none"
+              className="bg-[#1c1c24] border-white/[0.08] text-sm text-zinc-200 min-h-[80px] rounded-none focus:ring-1 focus:ring-zinc-400 focus:border-white/[0.12] resize-none"
               data-testid="edit-draft-textarea"
             />
             <div className="flex gap-2">
               <Button
                 onClick={handleSaveEdit}
-                className="bg-white text-[#09090b] hover:bg-zinc-200 rounded-none px-4 py-1.5 text-xs font-bold"
+                className="bg-zinc-200 text-zinc-900 hover:bg-zinc-300 rounded-none px-4 py-1.5 text-xs font-bold"
                 data-testid="save-edit-btn"
               >
                 <Save className="w-3 h-3 mr-1.5" />
@@ -135,7 +144,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
               <Button
                 onClick={handleCancelEdit}
                 variant="ghost"
-                className="text-zinc-400 hover:text-white rounded-none px-4 py-1.5 text-xs"
+                className="text-zinc-500 hover:text-zinc-300 rounded-none px-4 py-1.5 text-xs"
                 data-testid="cancel-edit-btn"
               >
                 Cancel
@@ -143,7 +152,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
             </div>
           </div>
         ) : (
-          <div className="p-4 bg-[#18181b] border-l-2 border-white text-sm text-zinc-200 leading-relaxed">
+          <div className="p-4 bg-[#1c1c24] border-l-2 border-zinc-400 text-sm text-zinc-300 leading-relaxed">
             <p data-testid="ai-draft-text">{comment.ai_draft}</p>
           </div>
         )}
@@ -155,7 +164,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
           <Button
             onClick={handleApprove}
             disabled={approving}
-            className="bg-white text-[#09090b] hover:bg-zinc-200 rounded-none px-5 py-2 text-xs font-bold transition-all duration-200"
+            className="bg-zinc-200 text-zinc-900 hover:bg-zinc-300 rounded-none px-5 py-2 text-xs font-bold transition-all duration-200"
             data-testid="approve-comment-btn"
           >
             {approving ? (
@@ -168,7 +177,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
           <Button
             onClick={() => setEditing(true)}
             variant="outline"
-            className="border border-white/10 bg-transparent text-white hover:bg-white/5 hover:text-white rounded-none px-4 py-2 text-xs font-semibold transition-all duration-200"
+            className="border border-white/[0.08] bg-transparent text-zinc-300 hover:bg-white/[0.04] hover:text-zinc-100 rounded-none px-4 py-2 text-xs font-semibold transition-all duration-200"
             data-testid="edit-comment-btn"
           >
             <Pencil className="w-3.5 h-3.5 mr-1.5" />
@@ -178,7 +187,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
             onClick={handleRegenerate}
             disabled={regenerating}
             variant="ghost"
-            className="text-zinc-400 hover:text-white hover:bg-white/5 rounded-none px-4 py-2 text-xs transition-all duration-200"
+            className="text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04] rounded-none px-4 py-2 text-xs transition-all duration-200"
             data-testid="regenerate-comment-btn"
           >
             {regenerating ? (
@@ -191,7 +200,7 @@ export default function CommentCard({ comment, onApprove, onRegenerate, onEdit, 
           <Button
             onClick={() => onSkip(comment.id)}
             variant="ghost"
-            className="text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-none px-4 py-2 text-xs font-semibold transition-all duration-200 ml-auto"
+            className="text-zinc-600 hover:text-red-400 hover:bg-red-500/10 rounded-none px-4 py-2 text-xs font-semibold transition-all duration-200 ml-auto"
             data-testid="skip-comment-btn"
           >
             <X className="w-3.5 h-3.5 mr-1.5" />

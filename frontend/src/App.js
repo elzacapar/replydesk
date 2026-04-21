@@ -190,6 +190,16 @@ function App() {
     }
   };
 
+  const handleUpdateTone = async (accountId, tone) => {
+    try {
+      await axios.put(`${API}/accounts/${accountId}/tone`, { tone_preset: tone });
+      toast.success(`Tone set to ${tone}`);
+      fetchPlatforms();
+    } catch (e) {
+      toast.error("Failed to update tone");
+    }
+  };
+
   const selectedAccount = platforms
     .flatMap(p => p.accounts)
     .find(a => a.id === selectedAccountId);
@@ -201,12 +211,12 @@ function App() {
       : "All Comments";
 
   return (
-    <div className="flex min-h-screen bg-[#09090b]" data-testid="app-root">
+    <div className="flex min-h-screen bg-[#13131a]" data-testid="app-root">
       <Toaster
         theme="dark"
         position="top-right"
         toastOptions={{
-          style: { background: "#18181b", border: "1px solid rgba(255,255,255,0.1)", color: "#fff" },
+          style: { background: "#1c1c24", border: "1px solid rgba(255,255,255,0.06)", color: "#d4d4dc" },
         }}
       />
       <Sidebar
@@ -218,6 +228,7 @@ function App() {
         onShowAll={handleShowAll}
         onConnectAccount={handleConnectAccount}
         onDeleteAccount={handleDeleteAccount}
+        onUpdateTone={handleUpdateTone}
         loading={loading}
       />
       <div className="flex-1 ml-64 flex flex-col min-h-screen">
@@ -233,19 +244,19 @@ function App() {
           <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <h2
-                className="text-2xl tracking-tight font-bold text-white"
+                className="text-2xl tracking-tight font-bold text-zinc-100"
                 style={{ fontFamily: "'Cabinet Grotesk', 'Manrope', sans-serif" }}
                 data-testid="queue-title"
               >
                 {currentTitle}
               </h2>
-              <p className="text-sm text-zinc-400 mt-1" data-testid="queue-count">
+              <p className="text-sm text-zinc-500 mt-1" data-testid="queue-count">
                 {comments.length} pending {comments.length === 1 ? "comment" : "comments"}
               </p>
             </div>
             {loading ? (
               <div className="flex items-center justify-center py-20" data-testid="loading-state">
-                <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin-slow" />
+                <div className="w-6 h-6 border-2 border-zinc-600 border-t-zinc-300 rounded-full animate-spin-slow" />
               </div>
             ) : comments.length === 0 ? (
               <EmptyState selectedPlatform={selectedPlatform} />

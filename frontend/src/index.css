@@ -9,37 +9,37 @@ body {
   font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #09090b;
-  color: #ffffff;
+  background-color: #13131a;
+  color: #d4d4dc;
 }
 
 @layer base {
   :root {
-    --background: 0 0% 3.5%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 3.5%;
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 63%;
-    --accent: 0 0% 12%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 83%;
+    --background: 240 12% 9%;
+    --foreground: 240 5% 86%;
+    --card: 240 10% 12%;
+    --card-foreground: 240 5% 86%;
+    --popover: 240 10% 12%;
+    --popover-foreground: 240 5% 86%;
+    --primary: 240 5% 86%;
+    --primary-foreground: 240 12% 9%;
+    --secondary: 240 8% 16%;
+    --secondary-foreground: 240 5% 86%;
+    --muted: 240 8% 16%;
+    --muted-foreground: 240 5% 55%;
+    --accent: 240 8% 16%;
+    --accent-foreground: 240 5% 86%;
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 240 5% 86%;
+    --border: 240 6% 20%;
+    --input: 240 6% 20%;
+    --ring: 240 5% 70%;
     --radius: 0rem;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 220 50% 50%;
+    --chart-2: 160 40% 45%;
+    --chart-3: 30 55% 55%;
+    --chart-4: 280 45% 60%;
+    --chart-5: 340 50% 55%;
   }
 }
 
